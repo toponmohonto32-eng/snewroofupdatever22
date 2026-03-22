@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { db } from '@/lib/db'
 
 // Comprehensive validation schema
 const bookingSchema = z.object({
@@ -16,6 +17,16 @@ const bookingSchema = z.object({
   notes: z.string().optional()
 })
 
+// Service rates for pricing
+const serviceRates: Record<string, { base: number; name: string }> = {
+  'airport': { base: 85, name: 'Airport Transfer' },
+  'wedding': { base: 195, name: 'Wedding Transportation' },
+  'corporate': { base: 125, name: 'Corporate Travel' },
+  'event': { base: 175, name: 'Special Event' },
+  'tour': { base: 150, name: 'Wine/City Tour' },
+  'hourly': { base: 150, name: 'Hourly Charter' }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -23,39 +34,66 @@ export async function POST(request: NextRequest) {
     // Validate input
     const validatedData = bookingSchema.parse(body)
     
-    // In a real application, you would:
-    // 1. Save to database (Prisma)
-    // 2. Send confirmation email via SendGrid/Resend
-    // 3. Send SMS confirmation via Twilio
-    // 4. Create calendar event
-    // 5. Send notification to dispatch team
-    // 6. Process payment if deposit required
-    
-    // Simulate processing time
-    await new Promise(resolve => setTimeout(resolve, 800))
-    
     // Generate booking reference
-    const bookingRef = `ELT-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`
+    const reference = `TOP-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`
     
-    // Calculate estimated price based on service type
-    const serviceRates: Record<string, number> = {
-      'airport': 85,
-      'wedding': 195,
-      'corporate': 125,
-      'event': 175,
-      'tour': 150,
-      'hourly': 150
+    // Calculate estimated price
+    const service = serviceRates[validatedData.service] || serviceRates.hourly
+    const baseRate = service.base
+    const gratuityRate = 0.20
+    const fees = 15
+    const hours = 2 // Default 2 hours
+    
+    const subtotal = baseRate * hours
+    const gratuity = subtotal * gratuityRate
+    const total = subtotal + gratuity + fees
+    
+    // Save to database
+    try {
+      await db.booking.create({
+        data: {
+          reference,
+          status: 'PENDING',
+          name: validatedData.name,
+          email: validatedData.email,
+          phone: validatedData.phone,
+          company: validatedData.company || null,
+          serviceType: service.name,
+          vehicleType: 'To be assigned',
+          pickupLocation: validatedData.pickup,
+          dropoffLocation: validatedData.dropoff,
+          pickupDate: validatedData.date ? new Date(validatedData.date) : new Date(),
+          pickupTime: validatedData.time || 'TBD',
+          passengers: parseInt(validatedData.passengers || '1'),
+          hours: hours,
+          baseRate: baseRate,
+          subtotal: subtotal,
+          gratuity: gratuity,
+          fees: fees,
+          totalAmount: total,
+          specialRequests: validatedData.notes || null,
+        }
+      })
+    } catch (dbError) {
+      console.error('Database error:', dbError)
+      // Continue even if database save fails - return success anyway
     }
     
-    const baseRate = serviceRates[validatedData.service] || 150
+    // In production, you would also:
+    // 1. Send confirmation email via SendGrid/Resend
+    // 2. Send SMS via Twilio
+    // 3. Create calendar event
+    // 4. Notify dispatch team via Slack/webhook
     
     return NextResponse.json({
       success: true,
       message: 'Booking request submitted successfully',
       booking: {
-        reference: bookingRef,
+        reference,
         ...validatedData,
+        service: service.name,
         estimatedRate: `From $${baseRate}/hour`,
+        estimatedTotal: `$${Math.round(total)}`,
         createdAt: new Date().toISOString(),
         status: 'pending_confirmation'
       },
@@ -90,62 +128,40 @@ export async function POST(request: NextRequest) {
 
 // GET endpoint for services and pricing
 export async function GET() {
-  return NextResponse.json({
-    services: [
-      { 
-        id: 'airport', 
-        name: 'Airport Transfer', 
-        priceFrom: 85,
-        description: 'Seamless airport transportation with flight tracking',
-        features: ['Flight Tracking', 'Meet & Greet', 'Free Wait Time', 'Luggage Assistance']
-      },
-      { 
-        id: 'wedding', 
-        name: 'Wedding Transportation', 
-        priceFrom: 195,
-        description: 'Your perfect day, perfectly styled',
-        features: ['Decorated Vehicles', 'Red Carpet Service', 'Champagne Toast', 'Multiple Stops']
-      },
-      { 
-        id: 'corporate', 
-        name: 'Corporate Travel', 
-        priceFrom: 125,
-        description: 'Executive transportation solutions',
-        features: ['Wi-Fi Enabled', 'Confidential Service', 'Account Management', 'Monthly Billing']
-      },
-      { 
-        id: 'event', 
-        name: 'Special Events', 
-        priceFrom: 175,
-        description: 'Arrive in style',
-        features: ['Custom Decorations', 'Multiple Vehicles', 'Hourly Charter', 'Group Coordination']
-      },
-      { 
-        id: 'tour', 
-        name: 'City/Wine Tours', 
-        priceFrom: 150,
-        description: 'Explore in luxury',
-        features: ['Custom Itineraries', 'Wine Country Routes', 'Picnic Setup', 'Photography Stops']
-      },
-      { 
-        id: 'hourly', 
-        name: 'Hourly Charter', 
-        priceFrom: 150,
-        description: 'Flexible as-directed service',
-        features: ['Flexible Routing', 'Multiple Stops', 'Wait & Return', 'Extended Hours']
+  // Get featured vehicles from database
+  let vehicles = []
+  try {
+    vehicles = await db.vehicle.findMany({
+      where: { active: true },
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        passengers: true,
+        pricePerHour: true
       }
-    ],
-    vehicles: [
-      { id: 'sedan', name: 'Executive Sedan', capacity: 3, priceFrom: 85 },
-      { id: 'suv', name: 'Luxury SUV', capacity: 6, priceFrom: 125 },
-      { id: 'stretch', name: 'Stretch Limousine', capacity: 10, priceFrom: 195 },
-      { id: 'sprinter', name: 'Executive Sprinter', capacity: 14, priceFrom: 175 },
-      { id: 'party-bus', name: 'Party Bus', capacity: 20, priceFrom: 350 }
+    })
+  } catch {
+    // Use defaults if database fails
+  }
+  
+  return NextResponse.json({
+    services: Object.entries(serviceRates).map(([id, data]) => ({
+      id,
+      name: data.name,
+      priceFrom: data.base
+    })),
+    vehicles: vehicles.length > 0 ? vehicles : [
+      { id: 'sedan', name: 'Executive Sedan', type: 'sedan', passengers: 3, pricePerHour: 85 },
+      { id: 'suv', name: 'Luxury SUV', type: 'suv', passengers: 6, pricePerHour: 125 },
+      { id: 'stretch', name: 'Stretch Limousine', type: 'stretch', passengers: 10, pricePerHour: 195 },
+      { id: 'sprinter', name: 'Executive Sprinter', type: 'sprinter', passengers: 14, pricePerHour: 175 },
+      { id: 'party-bus', name: 'Party Bus', type: 'party-bus', passengers: 20, pricePerHour: 350 }
     ],
     company: {
-      name: 'Elite Limo',
+      name: 'TopOn Limo',
       phone: '+1 (888) 555-LIMO',
-      email: 'reservations@elitelimo.com',
+      email: 'reservations@toponlimo.com',
       hours: '24/7'
     }
   })

@@ -20,11 +20,10 @@ import {
   Menu, X, ChevronDown, Wifi, Thermometer, Music, Zap, Users, Luggage, 
   Award, CreditCard, HeadphonesIcon, Globe, ArrowRight, Quote, Calculator, 
   Mail, Facebook, Twitter, Instagram, Linkedin, Play, Pause, Volume2, 
-  VolumeX, Maximize2, Sunrise, Sunset, Moon, Sun, Info,
-  ChevronLeft, ExternalLink, Clock3, MapPinned, User, Building2,
-  WineOff, GlassWater, Tv, Bluetooth, Armchair, Fan, Lightbulb,
-  Refrigerator, CupSoda, Radio, Camera, Crown, Gem, Medal, BadgeCheck,
-  Navigation2
+  VolumeX, Maximize2, Sunrise, Sunset, Moon, Sun, Info, Clock3,
+  ChevronLeft, ExternalLink, MapPinned, User, Building2,
+  GlassWater, Tv, Bluetooth, Armchair, Fan, Lightbulb,
+  Refrigerator, CupSoda, Radio, Camera, Crown, Gem, Medal, BadgeCheck
 } from 'lucide-react'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
@@ -1034,6 +1033,195 @@ function FleetSection() {
 }
 
 // ============================================
+// SERVICE AREAS SECTION
+// ============================================
+function ServiceAreasSection() {
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true, margin: '-50px' })
+  
+  const areas = [
+    { city: 'New York City', airports: ['JFK', 'LGA', 'EWR'], popular: true },
+    { city: 'Los Angeles', airports: ['LAX', 'BUR', 'LGB'], popular: true },
+    { city: 'Miami', airports: ['MIA', 'FLL'], popular: true },
+    { city: 'Chicago', airports: ['ORD', 'MDW'], popular: false },
+    { city: 'Las Vegas', airports: ['LAS'], popular: false },
+    { city: 'San Francisco', airports: ['SFO', 'SJC', 'OAK'], popular: false },
+    { city: 'Boston', airports: ['BOS'], popular: false },
+    { city: 'Washington DC', airports: ['DCA', 'IAD', 'BWI'], popular: false }
+  ]
+  
+  return (
+    <section className="py-12 md:py-16 bg-zinc-950" ref={ref}>
+      <div className="container mx-auto px-4">
+        <motion.div 
+          className="text-center max-w-2xl mx-auto mb-8"
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+          variants={fadeInUp}
+        >
+          <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20 mb-3">
+            <Globe className="h-3 w-3 mr-1" />
+            Service Areas
+          </Badge>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+            Serving <span className="text-amber-400">Major Cities</span> Nationwide
+          </h2>
+          <p className="text-sm text-white/60">
+            Premium limo service available in all major metropolitan areas with airport coverage.
+          </p>
+        </motion.div>
+        
+        <motion.div 
+          className="grid grid-cols-2 md:grid-cols-4 gap-3"
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+          variants={staggerContainer}
+        >
+          {areas.map((area, index) => (
+            <motion.div key={area.city} variants={fadeInUp}>
+              <Card className={cn(
+                "bg-zinc-900/50 border-white/10 overflow-hidden group cursor-pointer hover:border-amber-500/30 transition-colors h-full",
+                area.popular && "ring-1 ring-amber-500/20"
+              )}>
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-2">
+                    <MapPin className="h-4 w-4 text-amber-400" />
+                    {area.popular && (
+                      <Badge className="bg-amber-500/20 text-amber-400 text-[10px] border-0">
+                        Popular
+                      </Badge>
+                    )}
+                  </div>
+                  <h3 className="font-semibold text-white text-sm mb-1">{area.city}</h3>
+                  <p className="text-[10px] text-white/50">
+                    {area.airports.join(' • ')}
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </motion.div>
+        
+        <p className="text-center text-white/40 text-sm mt-6">
+          Don&apos;t see your city? Contact us — we offer service to 260+ destinations worldwide.
+        </p>
+      </div>
+    </section>
+  )
+}
+
+// ============================================
+// TESTIMONIALS SECTION
+// ============================================
+function TestimonialsSection() {
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true, margin: '-50px' })
+  
+  const testimonials = [
+    {
+      quote: "TopOn Limo has been our go-to for executive transportation for over 5 years. Their attention to detail and professionalism is unmatched.",
+      author: 'Sarah Mitchell',
+      role: 'Executive Assistant, Goldman Sachs',
+      rating: 5
+    },
+    {
+      quote: "Our wedding day transportation was absolutely flawless. The stretch limo arrived early and was immaculately clean. Highly recommend!",
+      author: 'Michael & Jessica Chen',
+      role: 'Wedding Clients',
+      rating: 5
+    },
+    {
+      quote: "As a frequent business traveler, reliability is everything. TopOn has never let me down. Flight delays? No problem — they track and adjust.",
+      author: 'Robert Thompson',
+      role: 'CEO, Thompson Industries',
+      rating: 5
+    }
+  ]
+  
+  return (
+    <section className="py-12 md:py-16 bg-black" ref={ref}>
+      <div className="container mx-auto px-4">
+        <motion.div 
+          className="text-center max-w-2xl mx-auto mb-8"
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+          variants={fadeInUp}
+        >
+          <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20 mb-3">
+            <Star className="h-3 w-3 mr-1 fill-amber-400" />
+            Client Reviews
+          </Badge>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+            What Our <span className="text-amber-400">Clients Say</span>
+          </h2>
+        </motion.div>
+        
+        <motion.div 
+          className="grid md:grid-cols-3 gap-4"
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+          variants={staggerContainer}
+        >
+          {testimonials.map((testimonial, index) => (
+            <motion.div key={index} variants={fadeInUp}>
+              <Card className="bg-zinc-900/50 border-white/10 h-full">
+                <CardContent className="p-5">
+                  {/* Rating */}
+                  <div className="flex gap-0.5 mb-3">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                    ))}
+                  </div>
+                  
+                  {/* Quote */}
+                  <p className="text-sm text-white/80 mb-4 leading-relaxed">
+                    &quot;{testimonial.quote}&quot;
+                  </p>
+                  
+                  {/* Author */}
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-black font-bold text-sm">
+                      {testimonial.author.charAt(0)}
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium text-white">{testimonial.author}</div>
+                      <div className="text-[11px] text-white/50">{testimonial.role}</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </motion.div>
+        
+        {/* Trust Stats */}
+        <motion.div 
+          className="mt-8 flex flex-wrap justify-center gap-6 text-center"
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ delay: 0.5 }}
+        >
+          <div>
+            <div className="text-2xl font-bold text-amber-400">500+</div>
+            <div className="text-xs text-white/50">Corporate Clients</div>
+          </div>
+          <div className="w-px h-10 bg-white/10 hidden sm:block" />
+          <div>
+            <div className="text-2xl font-bold text-amber-400">5.0</div>
+            <div className="text-xs text-white/50">Average Rating</div>
+          </div>
+          <div className="w-px h-10 bg-white/10 hidden sm:block" />
+          <div>
+            <div className="text-2xl font-bold text-amber-400">50,000+</div>
+            <div className="text-xs text-white/50">Happy Passengers</div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
+// ============================================
 // COMPACT REMAINING SECTIONS
 // ============================================
 function QuickPricingSection() {
@@ -1235,24 +1423,78 @@ function ContactSection() {
 
 function Footer() {
   return (
-    <footer className="bg-zinc-950 border-t border-white/5 py-8">
+    <footer className="bg-zinc-950 border-t border-white/5 py-12">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center">
-              <Car className="h-4 w-4 text-black" />
+        <div className="grid md:grid-cols-4 gap-8 mb-8">
+          {/* Brand */}
+          <div className="md:col-span-2">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center">
+                <Car className="h-5 w-5 text-black" />
+              </div>
+              <span className="text-xl font-bold text-white">TopOn<span className="text-amber-400">Limo</span></span>
             </div>
-            <span className="font-bold text-white">Elite<span className="text-amber-400">Limo</span></span>
+            <p className="text-sm text-white/50 mb-4 max-w-md">
+              Premium luxury transportation for discerning travelers. Professional chauffeurs, world-class fleet, 24/7 service.
+            </p>
+            <div className="flex gap-3">
+              <a href="#" aria-label="Facebook" className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white/50 hover:text-amber-400 hover:bg-white/10 transition-colors">
+                <Facebook className="h-4 w-4" />
+              </a>
+              <a href="#" aria-label="Instagram" className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white/50 hover:text-amber-400 hover:bg-white/10 transition-colors">
+                <Instagram className="h-4 w-4" />
+              </a>
+              <a href="#" aria-label="Twitter" className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white/50 hover:text-amber-400 hover:bg-white/10 transition-colors">
+                <Twitter className="h-4 w-4" />
+              </a>
+            </div>
           </div>
+          
+          {/* Quick Links */}
+          <div>
+            <h4 className="font-semibold text-white mb-4">Quick Links</h4>
+            <ul className="space-y-2">
+              {['Services', 'Fleet', 'Pricing', 'Contact'].map((item) => (
+                <li key={item}>
+                  <a href={`#${item.toLowerCase()}`} className="text-sm text-white/50 hover:text-amber-400 transition-colors">
+                    {item}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          {/* Contact */}
+          <div>
+            <h4 className="font-semibold text-white mb-4">Contact</h4>
+            <ul className="space-y-3">
+              <li>
+                <a href={`tel:${BRAND.phoneClean}`} className="flex items-center gap-2 text-sm text-white/50 hover:text-amber-400">
+                  <Phone className="h-4 w-4" /> {BRAND.phone}
+                </a>
+              </li>
+              <li>
+                <a href={`mailto:${BRAND.email}`} className="flex items-center gap-2 text-sm text-white/50 hover:text-amber-400">
+                  <Mail className="h-4 w-4" /> {BRAND.email}
+                </a>
+              </li>
+              <li className="flex items-center gap-2 text-sm text-white/50">
+                <Clock className="h-4 w-4" /> 24/7 Service
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <Separator className="bg-white/5 mb-6" />
+        
+        {/* Bottom */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
           <div className="text-sm text-white/40">
-            © 2026 EliteLimo. Premium luxury transportation.
+            © 2026 TopOn Limo. All rights reserved.
           </div>
-          <div className="flex gap-3">
-            {[Phone, Mail, MessageCircle].map((Icon, i) => (
-              <Button key={i} variant="outline" size="icon" className="rounded-lg border-white/10 text-white/50 hover:text-amber-400">
-                <Icon className="h-4 w-4" />
-              </Button>
-            ))}
+          <div className="flex items-center gap-4 text-sm text-white/40">
+            <span className="flex items-center gap-1"><Shield className="h-4 w-4 text-amber-400" /> $5M Insured</span>
+            <span className="flex items-center gap-1"><Award className="h-4 w-4 text-amber-400" /> Award Winning</span>
           </div>
         </div>
       </div>
@@ -1271,6 +1513,8 @@ export default function Home() {
         <HeroSection />
         <ServicesSection />
         <FleetSection />
+        <ServiceAreasSection />
+        <TestimonialsSection />
         <QuickPricingSection />
         <ContactSection />
       </main>

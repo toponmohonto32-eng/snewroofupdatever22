@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,20 +10,123 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+// Customer information
+model Customer {
   id        String   @id @default(cuid())
   email     String   @unique
-  name      String?
+  phone     String
+  name      String
+  company   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  bookings  Booking[]
 }
 
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// Booking/Reservation
+model Booking {
+  id              String   @id @default(cuid())
+  reference       String   @unique
+  status          BookingStatus @default(PENDING)
+  
+  // Customer Info
+  customerId      String?
+  customer        Customer? @relation(fields: [customerId], references: [id])
+  name            String
+  email           String
+  phone           String
+  company         String?
+  
+  // Trip Details
+  serviceType     String   // airport, wedding, corporate, event, tour
+  vehicleType     String   // sedan, suv, stretch, sprinter, party-bus
+  pickupLocation  String
+  dropoffLocation String
+  pickupDate      DateTime
+  pickupTime      String
+  passengers      Int      @default(1)
+  hours           Int      @default(2)
+  
+  // Pricing
+  baseRate        Float
+  subtotal        Float
+  gratuity        Float
+  fees            Float
+  totalAmount     Float
+  
+  // Additional Info
+  specialRequests String?
+  flightNumber    String?  // For airport transfers
+  meetGreet       Boolean  @default(false)
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  confirmedAt     DateTime?
+  completedAt     DateTime?
+  cancelledAt     DateTime?
+  
+  // Admin Notes
+  internalNotes   String?
+  assignedDriver  String?
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+// Service Areas
+model ServiceArea {
+  id          String   @id @default(cuid())
+  name        String
+  city        String
+  state       String
+  zipCode     String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+// Vehicle Fleet
+model Vehicle {
+  id            String   @id @default(cuid())
+  name          String
+  model         String
+  type          String   // sedan, suv, stretch, sprinter, party-bus
+  passengers    Int
+  luggage       Int
+  pricePerHour  Float
+  active        Boolean  @default(true)
+  features      String   // JSON array of features
+  imageUrl      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// Testimonials
+model Testimonial {
+  id          String   @id @default(cuid())
+  name        String
+  role        String
+  company     String?
+  content     String
+  rating      Int      @default(5)
+  approved    Boolean  @default(false)
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+// Contact Inquiries
+model Inquiry {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  subject     String
+  message     String
+  resolved    Boolean  @default(false)
+  createdAt   DateTime @default(now())
 }
