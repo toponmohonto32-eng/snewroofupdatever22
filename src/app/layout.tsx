@@ -14,24 +14,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://toponlimo.com'),
-  title: "TopOn Limo | Premium Luxury Limousine Service",
-  description: "TopOn Limo offers premium luxury limousine services for airport transfers, weddings, corporate travel, and special events. Professional chauffeurs, world-class fleet, 24/7 service. Book your ride today!",
+  metadataBase: new URL('https://elitelimo.com'),
+  title: "Elite Limo | Premium Luxury Limousine Service",
+  description: "Elite Limo offers premium luxury limousine services for airport transfers, weddings, corporate travel, and special events. Professional chauffeurs, world-class fleet, 24/7 service. Book your ride today!",
   keywords: [
     "limo service", "limousine rental", "airport transfer", "wedding limo", 
     "corporate transportation", "luxury car service", "chauffeur service",
     "party bus rental", "executive car service", "black car service",
     "prom limo", "VIP transportation", "luxury travel"
   ],
-  authors: [{ name: "TopOn Limo Team" }],
+  authors: [{ name: "Elite Limo Team" }],
   icons: {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "TopOn Limo | Premium Luxury Limousine Service",
+    title: "Elite Limo | Premium Luxury Limousine Service",
     description: "Experience world-class luxury transportation. Airport transfers, weddings, corporate travel & special events. 24/7 service, professional chauffeurs.",
-    url: "https://toponlimo.com",
-    siteName: "TopOn Limo",
+    url: "https://elitelimo.com",
+    siteName: "Elite Limo",
     type: "website",
     locale: "en_US",
     images: [
@@ -39,13 +39,13 @@ export const metadata: Metadata = {
         url: "/images/hero-premium.png",
         width: 1440,
         height: 720,
-        alt: "TopOn Limo Luxury Fleet",
+        alt: "Elite Limo Luxury Fleet",
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
-    title: "TopOn Limo | Premium Luxury Limousine Service",
+    title: "Elite Limo | Premium Luxury Limousine Service",
     description: "Experience world-class luxury transportation. Professional chauffeurs, premium fleet, 24/7 service.",
     images: ["/images/hero-premium.png"],
   },
@@ -62,12 +62,12 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
-  "name": "TopOn Limo",
+  "name": "Elite Limo",
   "description": "Premium luxury limousine service for airport transfers, weddings, corporate travel, and special events.",
   "image": "/images/hero-premium.png",
-  "url": "https://toponlimo.com",
+  "url": "https://elitelimo.com",
   "telephone": "+1-888-555-LIMO",
-  "email": "reservations@toponlimo.com",
+  "email": "reservations@elitelimo.com",
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "123 Executive Drive",
@@ -94,9 +94,9 @@ const jsonLd = {
     "reviewCount": "500"
   },
   "sameAs": [
-    "https://facebook.com/toponlimo",
-    "https://instagram.com/toponlimo",
-    "https://twitter.com/toponlimo"
+    "https://facebook.com/elitelimo",
+    "https://instagram.com/elitelimo",
+    "https://twitter.com/elitelimo"
   ]
 };
 

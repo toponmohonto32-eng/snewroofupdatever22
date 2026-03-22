@@ -50,11 +50,11 @@ const staggerContainer = {
 // BRAND CONFIG
 // ============================================
 const BRAND = {
-  name: 'TopOn Limo',
+  name: 'Elite Limo',
   tagline: 'Luxury You Deserve, Service You Can Trust',
   phone: '+1 (888) 555-LIMO',
   phoneClean: '+18885555466',
-  email: 'reservations@toponlimo.com'
+  email: 'reservations@elitelimo.com'
 }
 
 // ============================================
