@@ -4,7 +4,6 @@
   "buildCommand": "bun run build",
   "devCommand": "bun run dev",
   "installCommand": "bun install",
-  "regions": ["sfo1", "lax1"],
   "headers": [
     {
       "source": "/(.*)",
