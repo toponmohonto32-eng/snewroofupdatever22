@@ -3562,6 +3562,27 @@ function Chatbot() {
     setIsLoading(true);
 
     try {
+      // For static export (GoDaddy), show a static response
+      // The API route won't be available on static hosting
+      const isStaticBuild = typeof window !== 'undefined' && !window.location.hostname.includes('vercel.app') && !window.location.hostname.includes('localhost');
+      
+      if (isStaticBuild) {
+        // Simulate a delay for better UX
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        const staticResponse: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: isSpanish 
+            ? '¡Gracias por su mensaje! Para una respuesta inmediata, llámenos al (714) 770-4756 o complete nuestro formulario de contacto. ¡Estamos aquí para ayudar!'
+            : 'Thank you for your message! For immediate assistance, please call us at (714) 770-4756 or fill out our contact form. We\'re here to help!',
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, staticResponse]);
+        setIsLoading(false);
+        return;
+      }
+
       // Build conversation history for context (last 10 messages)
       const conversationHistory = messages.slice(-10).map(msg => ({
         role: msg.role,
